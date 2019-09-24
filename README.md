@@ -3,6 +3,8 @@
   <sup>GatsbyJS Plugin · React</sup>
 </div>
 
+<br><br>
+
 This GatsbyJS plugin is creating a multi-layered react component with changing background images on mouse or touch moves.
 The images are in full width and cover the whole wrapper element.
 It's showen one image at a time. 
@@ -47,16 +49,16 @@ If there are other tutorials, docs, and learning resources that are necessary or
    ```
 
 2. Configure `gatsby-config.js`
-  ```javascript
-  module.exports = {
-    plugins: [
-      `gatsby-plugin-image-map`,
-      `gatsby-transformer-sharp`, // dependency that should be installed aswell
-      // ...
-    ],
-    // ...
-  }
-  ```
+   ```javascript
+   module.exports = {
+     plugins: [
+       `gatsby-plugin-image-map`,
+       `gatsby-transformer-sharp`, // dependency that should be installed aswell
+       // ...
+     ],
+     // ...
+   }
+   ```
 
 ## Available options
 
