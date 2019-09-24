@@ -16,11 +16,11 @@ On touch devices only the x-axis is beeing tracked for iterating the images.
 To use this plugin correctly you should have installed `gatsby-transformer-sharp`.
 
 1. Install `gatsby-transformer-sharp`
-   ```shell
-   yarn add gatsby-transformer-sharp
-   # or
-   npm install --save gatsby-transformer-sharp
-   ```
+  ```shell
+  yarn add gatsby-transformer-sharp
+  # or
+  npm install --save gatsby-transformer-sharp
+  ```
 
 2. Configure `gatsby-config.js`
   ```javascript
