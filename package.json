@@ -1,7 +1,7 @@
 {
   "name": "gatsby-plugin-react-image-map",
   "description": "This GatsbyJS plugin is creating a multi-layered react component with changing background images on mouse or touch moves",
-  "version": "1.0.0-0",
+  "version": "1.0.0-1",
   "main": "index.js",
   "keywords": [
     "gatsby",
