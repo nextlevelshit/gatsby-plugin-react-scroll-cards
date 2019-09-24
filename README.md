@@ -43,17 +43,17 @@ If there are other tutorials, docs, and learning resources that are necessary or
 
 1. Install `gatsby-plugin-image-map`
    ```shell
-   yarn add gatsby-plugin-image-map
+   yarn add gatsby-plugin-react-image-map
    # or
-   npm i --save-dev gatsby-plugin-image-map
+   npm i --save-dev gatsby-plugin-react-image-map
    ```
 
 2. Configure `gatsby-config.js`
    ```javascript
    module.exports = {
      plugins: [
-       `gatsby-plugin-image-map`,
        `gatsby-transformer-sharp`, // dependency that should be installed aswell
+       `gatsby-plugin-react-image-map`,
        // ...
      ],
      // ...
