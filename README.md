@@ -15,19 +15,26 @@ On touch devices only the x-axis is beeing tracked for iterating the images.
 
 ## Dependencies
 
-To use this plugin correctly you should have installed `gatsby-transformer-sharp`.
+To use this plugin correctly you should have installed [`gatsby-transformer-sharp`](https://www.gatsbyjs.org/packages/gatsby-transformer-sharp/) and an source processor for your images, which will be in most cases [`gatsby-source-filesystem`](https://www.gatsbyjs.org/packages/gatsby-source-filesystem).
 
-1. Install `gatsby-transformer-sharp`
+1. Install `gatsby-transformer-sharp` and `gatsby-source-filesystem`
    ```shell
-   yarn add gatsby-transformer-sharp
+   yarn add gatsby-transformer-sharp gatsby-source-filesystem
    # or
-   npm install --save gatsby-transformer-sharp
+   npm install --save gatsby-transformer-sharp gatsby-source-filesystem
    ```
 
 2. Configure `gatsby-config.js`
    ```javascript
    module.exports = {
      plugins: [
+        {
+          resolve: `gatsby-source-filesystem`,
+          options: {
+            name: `image-map`,
+            path: `${__dirname}/src/images/image-map/`,
+          },
+        },
        `gatsby-transformer-sharp`,
        // ...
      ]
@@ -52,9 +59,16 @@ If there are other tutorials, docs, and learning resources that are necessary or
    ```javascript
    module.exports = {
      plugins: [
-       `gatsby-transformer-sharp`, // dependency that should be installed aswell
-       `gatsby-plugin-react-image-map`,
-       // ...
+      `gatsby-transformer-sharp`,
+      {
+        resolve: `gatsby-source-filesystem`,
+        options: {
+          name: `images`,
+          path: `${__dirname}/src/images/`,
+        },
+      },
+      `gatsby-plugin-react-image-map`,
+      // ...
      ],
      // ...
    }
