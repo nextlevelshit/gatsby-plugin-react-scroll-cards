@@ -1,21 +1,21 @@
 <div align="center">
   <h1>gatsby-plugin-react-scroll-cards</h1>
-  <sup>GatsbyJS Plugin · React · TailwindCSS</sup>
+  <sup>GatsbyJS Plugin · React · TailwindCSS · lodash · React Scrollspy</sup>
 </div>
 
 <br><br>
 
-This GatsbyJS plugin is creating ...
+This GatsbyJS plugin is generating a full-height scroll menu with abstracts of each card. Cards can be clicked and opened in a separate modal.
 
 ## Dependencies
 
-To use this plugin correctly you should have installed [`gatsby-plugin-sass`](https://www.gatsbyjs.org/packages/gatsby-plugin-sass/) and [`tailwindcss`](#)
+To use this plugin correctly you should have installed [`gatsby-plugin-sass`](https://www.gatsbyjs.org/packages/gatsby-plugin-sass/), `tailwindcss`, `lodash` and `react-scrollspy`.
 
-1. Install `gatsby-plugin-sass` and `tailwindcss`
+1. Install `gatsby-plugin-sass`, `tailwindcss`, `lodash` and `react-scrollspy`
    ```shell
-   yarn add gatsby-plugin-sass tailwindcss
+   yarn add gatsby-plugin-sass tailwindcss lodash react-scrollspy
    # or
-   npm install --save gatsby-transformer-sharp tailwindcss
+   npm install --save gatsby-plugin-sass tailwindcss lodash react-scrollspy
    ```
 
 1. Configure `gatsby-config.js`
@@ -77,26 +77,42 @@ These are the default options and can/should be modified.
 All the rest is optional.
 
 ```javascript
-hasIndicator: true,                 // (optional) show or hide cards indicator
-itemClass: `nls-scroll-cards__item`
-nodes: [                            // Markdown nodes for the cards
+cssVariables: {
+  iconSize: `0.6rem`,
+  bg: `255, 255, 255`
+},
+hasIndicator: true,
+indicatorClass: `nls-scroll-cards__indicator`,
+indicatorTitleClass: `nls-scroll-cards__indicator__title`,
+indicatorTitleActiveClass: `nls-scroll-cards__indicator__title--active`,
+itemClass: `nls-scroll-cards__item`,
+itemContentClass: `nls-scroll-cards__item__content`,
+itemTitleClass: `nls-scroll-cards__item__title`,
+nodes: [
   {
     frontmatter: {
-      title: ``                     // Title of markdown node
+      title: `Nothing to see here ...`,
     },
-    html: ``                        // HTML content of markdown node
-  },
+    html: `There was no content uploaded yet.`,
+  }
 ],
+scrollOffset: -200,
 wrapperClass: `nls-scroll-cards`
 ```
 
 ## When do I use this plugin?
 
+...
+
 
 ## Examples of usage
 
+...
+
 
 ## Examples
+
+...
 
 <!-- ## How to run tests
 

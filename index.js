@@ -1,18 +1,33 @@
 /** 
- *  @fileOverview Generate React Component Scrollable Cards.
+ *  @fileOverview Generate React Component Scrollable Cards with 
+ *                Indicator Sidebar
  *
  *  @author       Michael Czechowski <mail@dailysh.it>
  *
- *  @requires     NPM: react, prop-types
+ *  @requires     NPM: react, prop-types, lodash, react-scrollspy
  */
 import { kebabCase } from "lodash"
-import React from "react"
 import PropTypes from "prop-types"
+import React from "react"
 import Scrollspy from "react-scrollspy"
 
 import "./index.scss"
 
 class ScrollCards extends React.Component {
+
+  cssVariablesMapping = {
+    iconSize: `--nls-scroll-cards-icon-size`,
+    bg:       `--nls-scroll-cards-bg`
+  }
+
+  componentDidMount() {
+    this.applyCssVariables()
+  }
+
+  componentWillUnmount() {
+    this.removeCssVariables()
+  }
+
   /**
    * Renders react component
    */
@@ -25,13 +40,14 @@ class ScrollCards extends React.Component {
       itemClass, 
       itemContentClass, 
       itemTitleClass,
+      hasIndicator,
       scrollOffset,
       wrapperClass,
     } = this.props
 
     return (
       <div className={wrapperClass}>
-        <div className={indicatorClass}>
+        {hasIndicator && <div className={indicatorClass}>
           <Scrollspy offset={scrollOffset} className="container" items={this.titles.map((title) => kebabCase(title))} currentClassName={indicatorTitleActiveClass}>
             {this.titles.map((title, i) => {
               return (
@@ -43,7 +59,7 @@ class ScrollCards extends React.Component {
               )
             })}
           </Scrollspy>
-        </div>
+        </div>}
         <div>
           {nodes.map(({ frontmatter, html }, i) => {
             const { title } = frontmatter
@@ -64,6 +80,30 @@ class ScrollCards extends React.Component {
     )
   }
   /**
+   * Applys all CSS Variables to the document so the stylesheet
+   * can use certain variables required for the modal behaviour.
+   */
+  applyCssVariables() {
+    const { cssVariables } = this.props
+
+    Object.keys(this.cssVariablesMapping).forEach(key => {
+      const value = cssVariables[key]
+      const variable = this.cssVariablesMapping[key]
+
+      return document.documentElement.style.setProperty(variable, value)
+    })
+  }
+  /**
+   * Removes all CSS variables in order not to spoil the DOM unnecessarily.
+   */
+  removeCssVariables() {
+    Object.keys(this.cssVariablesMapping).forEach(key => {
+      const variable = this.cssVariablesMapping[key]
+      
+      return document.documentElement.style.removeProperty(variable)
+    }) 
+  }
+  /**
    * Extracts titles from markdown nodes.
    * 
    * @returns {string[]} List of all markdown node titles
@@ -76,6 +116,10 @@ class ScrollCards extends React.Component {
 }
 
 ScrollCards.propTypes = {
+  cssVariables: PropTypes.shape({
+    bg: PropTypes.string,
+    iconSize: PropTypes.string
+  }),
   hasIndicator: PropTypes.bool,
   indicatorClass: PropTypes.string,
   indicatorTitleClass: PropTypes.string,
@@ -96,6 +140,10 @@ ScrollCards.propTypes = {
 }
 
 ScrollCards.defaultProps = {
+  cssVariables: {
+    iconSize: `0.6rem`,
+    bg: `255, 255, 255`
+  },
   hasIndicator: true,
   indicatorClass: `nls-scroll-cards__indicator`,
   indicatorTitleClass: `nls-scroll-cards__indicator__title`,

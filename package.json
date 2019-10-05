@@ -11,6 +11,7 @@
   ],
   "author": "Michael Czechowski <mail@dailysh.it>",
   "dependencies": {
+    "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-scrollspy": "^3.4.0",

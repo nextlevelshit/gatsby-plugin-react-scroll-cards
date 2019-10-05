@@ -1,3 +1,8 @@
+:root {
+  --nls-scroll-cards-icon-size:   0.4rem;
+  --nls-scroll-cards-bg:          255, 255, 255;
+}
+
 .nls-scroll-cards {
   @apply relative;
 
@@ -25,8 +30,8 @@
 
       content: "";
       height: 75%;
-      background-color: rgba(255,255,255,0);
-      background-image: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+      background-color: rgba(var(--nls-scroll-cards-bg), 0);
+      background-image: linear-gradient(to bottom, rgba(var(--nls-scroll-cards-bg),0), rgba(var(--nls-scroll-cards-bg),1));
     }
   }
 
@@ -38,11 +43,9 @@
     }
 
     &__title {
-      $this-icon-size: 0.4rem;
-
       @apply flex flex-row items-center h-full text-right justify-end uppercase text-gray-600 text-sm relative;
 
-      padding-right: $this-icon-size * 4;
+      padding-right: calc(var(--nls-scroll-cards-icon-size) + 1rem);
       flex-shrink: 2;
 
       &--active {
@@ -60,11 +63,11 @@
         @apply absolute;
 
         content: "";
-        right: - $this-icon-size * 0.5;
-        height: $this-icon-size;
-        width: $this-icon-size; 
+        right: calc(-1 * var(--nls-scroll-cards-icon-size) * 0.5);
+        height: var(--nls-scroll-cards-icon-size);
+        width: var(--nls-scroll-cards-icon-size); 
         background: theme('colors.gray.600');
-        border-radius: $this-icon-size * 0.5;
+        border-radius: calc(var(--nls-scroll-cards-icon-size) * 0.5);
       }
     }
 
