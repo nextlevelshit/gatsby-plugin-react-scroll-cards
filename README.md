@@ -1,41 +1,36 @@
 <div align="center">
-  <h1>gatsby-plugin-react-image-map</h1>
-  <sup>GatsbyJS Plugin · React</sup>
+  <h1>gatsby-plugin-react-scroll-cards</h1>
+  <sup>GatsbyJS Plugin · React · TailwindCSS</sup>
 </div>
 
 <br><br>
 
-This GatsbyJS plugin is creating a multi-layered react component with changing background images on mouse or touch moves.
-The images are in full width and cover the whole wrapper element.
-It's showen one image at a time. 
-While moving the mouse in any direction the images are beeing iterated and exchanged.
-On touch devices only the x-axis is beeing tracked for iterating the images.
-
-<!-- Open example of [`gatsby-plugin-image-map`](https://paulastoll.de) -->
+This GatsbyJS plugin is creating ...
 
 ## Dependencies
 
-To use this plugin correctly you should have installed [`gatsby-transformer-sharp`](https://www.gatsbyjs.org/packages/gatsby-transformer-sharp/) and an source processor for your images, which will be in most cases [`gatsby-source-filesystem`](https://www.gatsbyjs.org/packages/gatsby-source-filesystem).
+To use this plugin correctly you should have installed [`gatsby-plugin-sass`](https://www.gatsbyjs.org/packages/gatsby-plugin-sass/) and [`tailwindcss`](#)
 
-1. Install `gatsby-transformer-sharp` and `gatsby-source-filesystem`
+1. Install `gatsby-plugin-sass` and `tailwindcss`
    ```shell
-   yarn add gatsby-transformer-sharp gatsby-source-filesystem
+   yarn add gatsby-plugin-sass tailwindcss
    # or
-   npm install --save gatsby-transformer-sharp gatsby-source-filesystem
+   npm install --save gatsby-transformer-sharp tailwindcss
    ```
 
-2. Configure `gatsby-config.js`
+1. Configure `gatsby-config.js`
    ```javascript
    module.exports = {
      plugins: [
-        {
-          resolve: `gatsby-source-filesystem`,
-          options: {
-            name: `image-map`,
-            path: `${__dirname}/src/images/image-map/`,
-          },
+      {
+        resolve: `gatsby-plugin-sass`,
+        options: {
+          postCssPlugins: [
+            require('tailwindcss'),
+            // require('./tailwind.config.js'), // Optionally add your personal tailwind config
+          ]
         },
-       `gatsby-transformer-sharp`,
+      },
        // ...
      ]
      // ...
@@ -48,26 +43,27 @@ If there are other tutorials, docs, and learning resources that are necessary or
 
 ## Install
 
-1. Install `gatsby-plugin-image-map`
+1. Install `gatsby-plugin-react-scroll-cards`
    ```shell
-   yarn add gatsby-plugin-react-image-map
+   yarn add gatsby-plugin-react-scroll-cards
    # or
-   npm i --save-dev gatsby-plugin-react-image-map
+   npm i --save-dev gatsby-plugin-react-scroll-cards
    ```
 
 2. Configure `gatsby-config.js`
    ```javascript
    module.exports = {
      plugins: [
-      `gatsby-transformer-sharp`,
       {
-        resolve: `gatsby-source-filesystem`,
+        resolve: `gatsby-plugin-sass`,
         options: {
-          name: `images`,
-          path: `${__dirname}/src/images/`,
+          postCssPlugins: [
+            require('tailwindcss'),
+            // require('./tailwind.config.js'), // Optionally add your personal tailwind config
+          ]
         },
       },
-      `gatsby-plugin-react-image-map`,
+      `gatsby-plugin-react-scroll-cards`,
       // ...
      ],
      // ...
@@ -81,77 +77,26 @@ These are the default options and can/should be modified.
 All the rest is optional.
 
 ```javascript
-activeClass: ``,          // (optional) class of an active image wrapper
-activeStyle: {            // (optional) active styles for active image wrapper
-  opacity: 1,
-},
-imageStyle: {             // (optional) custom styles for image element
-  maxWidth: `100%`,
-  maxHeight: `100vh`,
-},
-itemClass: ``,            // (optional) class of an active image wrapper
-itemStyle: {              // (optional) custom styles for image wrapper
-  position: `absolute`,
-  top: 0,
-  right: 0,
-  bottom: 0,
-  left: 0,
-  display: `block`,
-  opacity: 0,
-  width: `100%`,
-  height: `100%`,
-},
-nodes: [],                // list of your images
-threshold: 100            // (optional) the bigger the threshold, the longer
-                          // the mouse movement has to be to change an image
+hasIndicator: true,                 // (optional) show or hide cards indicator
+itemClass: `nls-scroll-cards__item`
+nodes: [                            // Markdown nodes for the cards
+  {
+    frontmatter: {
+      title: ``                     // Title of markdown node
+    },
+    html: ``                        // HTML content of markdown node
+  },
+],
+wrapperClass: `nls-scroll-cards`
 ```
 
 ## When do I use this plugin?
 
-This plugin is perfect to have an interactive first impression of your website.
-The images are in the background so you can easily put content in front of them.
-It is a kind of interactice slide show.
 
 ## Examples of usage
 
-```javascript
-import React from "react"
-import { useStaticQuery, graphql } from "gatsby"
-import ImageMap from "gatsby-plugin-react-image-map" // import the image-map plugin
-
-const ImageMapContainer = () => {
-  /**
-   * Query the images you'd like to be visible inside the image map.
-   * In this case the regular expression is looking for images inside
-   * the `image-map` folder inside your `src`
-   */
-  const data = useStaticQuery(graphql`
-    query ImageMapQuery {
-      allFile(filter: {sourceInstanceName: {eq: "image-map"}}) {
-        nodes {
-          childImageSharp {
-            fluid {
-              ...GatsbyImageSharpFluid_noBase64
-            }
-          }
-          relativePath
-        }
-      }
-    }
-  `)
-   
-  return (
-    <ImageMap nodes={data.allFile.nodes}/>
-  )
-}
-
-export default ImageMapContainer
-```
 
 ## Examples
-
-- [Paula Stoll · Documentary Director](https://paulastoll.de)
-- [Guenter Krauss](https://gk.dailysh.it)
 
 <!-- ## How to run tests
 

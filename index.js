@@ -1,177 +1,242 @@
 /** 
- *  @fileOverview Generate React Component for Image Map. This component
- *                takes an array of `childImageSharp` elements and renders
- *                them on separate layers inside a container. As soon as
- *                the user starts moving the mouse or swipes the screen,
- *                the images inside the container are exchanged.
+ *  @fileOverview Generate React Component Scrollable Cards.
  *
  *  @author       Michael Czechowski <mail@dailysh.it>
  *
- *  @requires     NPM: react, prop-types, gatsby-image
+ *  @requires     NPM: react, prop-types
  */
 import React from "react"
 import PropTypes from "prop-types"
-import Img from "gatsby-image"
 
-class ImageMap extends React.Component {
+import "./index.scss"
 
-  currentPosition = {
-    x: -1,
-    y: -1
-  }
+class ScrollCards extends React.Component {
+
+  progress = 0
 
   constructor(props) {
     super(props)
 
-    this.state = { 
-      active: Math.floor(Math.random() * props.nodes.length)
-    }
+    this.wrapper = React.createRef()
   }
 
-  /**
-   * Calculates the distance between the current/last position
-   * of the mouse and a new point on the client screen.
-   *
-   * @param   {number} clientX      the x-axis coordinate
-   * @param   {number} [clientY=0]  the y-axis coordinate
-   *
-   * @returns {number} delta between clientX and clientY
-   */
-  calculateDelta(clientX, clientY = 0) {   
-    const { x , y } = this.currentPosition
-
-    return Math.hypot((clientX - x), (clientY - y))
-  }
-  /**
-   * Event handler for mouse movement. While tracking the current/last
-   * mouse position the distance to that point is calculated each mouse
-   * move, so as soons as the threshold is reached a new image will be
-   * set as active and the `currentPosition` will be updated.
-   *
-   * @param   {number} clientX      the x-axis coordinate
-   * @param   {number} [clientY=0]  the y-axis coordinate
-   *
-   * @returns {number} delta between clientX and clientY
-   */
-  mouseMoved(e) {
-    const { clientX, clientY } = e 
-    const { threshold, nodes } = this.props
-    const { active } = this.state
-    const delta = this.calculateDelta(clientX, clientY)
-
-    /**
-     * If the threshold is reached, update the `currentPosition`
-     * and iterate to next image in `nodes`
-     */
-    if(delta > threshold) {
-      this.currentPosition = {
-        x: clientX,
-        y: clientY
-      }
-
-      this.setState({
-        active: (active + 1) % nodes.length
-      })
-    }
+  componentDidMount() {
+    // this.props.cssVariables = [
+    //   {
+    //     key: '--nls-scroll-cards-count',
+    //     val: this.titles.length
+    //   },
+    //   ...this.props.cssVariables
+    // ]
+    this.applyCssVariables()
+    this.trackScrollProgress()
   }
 
-  touchMoved(e) {
-    const { touches } = e 
-    const { clientX } = touches[0]
-    const { threshold, nodes } = this.props
-    const { active } = this.state
-    const delta = this.calculateDelta(clientX)
-
-    /**
-     * If the threshold is reached, update the `currentPosition`
-     * and iterate to next image in `nodes`.
-     */
-    if(delta > threshold) {
-      this.currentPosition = {
-        x: clientX,
-        y: 0
-      }
-
-      this.setState({
-        active: (active + 1) % nodes.length
-      })
-    }
+  componentWillUnmount() {
+    this.removeCssVariables()
   }
   /**
-   * Render react component
+   * Renders react component
    */
   render() {
-    const { nodes, activeClass, imageStyle } = this.props
-    const { active } = this.state
+    const { 
+      nodes, 
+      indicatorClass,
+      indicatorTitleClass,
+      itemClass, 
+      itemContentClass, 
+      itemTitleClass,
+      wrapperClass,
+    } = this.props
 
     return (
-      <div onMouseMove={this.mouseMoved.bind(this)} onTouchMove={this.touchMoved.bind(this)}>
-        {nodes.length > 0 && nodes.map(({ childImageSharp }, i) => {
-          const { fluid } = childImageSharp
-          let { itemClass, itemStyle, activeStyle } = this.props
-
-          /**
-           * If the index matches `active`, concatinate the classes
-           * and styles of the image and image wrapper element.
-           */
-          if (i === active) {
-            itemClass = ([activeClass, itemClass]).join(` `)
-            itemStyle = {
-              ...itemStyle,
-              ...activeStyle
-            }
-          }
-          
-          return (
-            <div className={itemClass} style={itemStyle} key={i}>
-              <Img fluid={fluid} style={imageStyle} />
-            </div>
-          )
-        })}
+      <div className={wrapperClass} ref={this.wrapper}>
+        <div className={indicatorClass}>
+          <div className="container">
+            {this.titles.map((title, i) => {
+              return (
+                <div className={indicatorTitleClass} key={i}>
+                  {title}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <div>
+          {nodes.map(({ frontmatter, html }, i) => {
+            return (
+              <div className={itemClass} key={i}>
+                <div className="container">
+                  <div className={itemContentClass} dangerouslySetInnerHTML={{ __html: html }} />
+                  <div className={itemTitleClass}>
+                    20.09.2019
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
       </div>
     )
   }
+
+  /**
+   * Applys all CSS Variables to the document so the stylesheet
+   * can use certain variables required for the component behaviour.
+   * 
+   * @returns {void}
+   */
+  applyCssVariables() {
+    const { cssVariables } = this.props
+
+    requestAnimationFrame(() => {
+      document.documentElement.style.setProperty(cssVariables.count.key, this.titles.length)
+      document.documentElement.style.setProperty(cssVariables.progress.key, `${this.progress}%`)
+    })
+  }
+  /**
+   * Removes all CSS variables in order not to spoil the DOM unnecessarily.
+   * 
+   * @returns {void}
+   */
+  removeCssVariables() {
+    const { cssVariables } = this.props
+
+    Object.keys(cssVariables).forEach(css => {
+      document.documentElement.style.removeProperty(css.key)
+    })
+  }
+  /**
+   * Adds a event listener for the scroll progress and adjusts variables 
+   * for the react component to work properly.
+   * 
+   * @return {void}
+   */
+  trackScrollProgress() {
+    document.addEventListener('scroll', () => {
+      this.calculateScrollDistance()
+    })
+  }
+  /**
+   * 
+   */
+  calculateScrollDistance() {
+    const { pageYOffset } = window
+    const { offsetTop } = this.wrapper.current
+    const correctedPageYOffset = pageYOffset - offsetTop
+
+    if (correctedPageYOffset > 0 && correctedPageYOffset <= this.wrapperHeight) {
+      this.progress = Math.floor(correctedPageYOffset / this.wrapperHeight * 100)
+    } else {
+      this.progress = 0
+    }
+    this.applyCssVariables()
+  }
+  calculateHeight(index) {
+    // calc(calc(100% - var(--nls-scroll-cards-progress)) / var(--nls-scroll-cards-count));
+
+    console.log((100 - this.progress) / this.titles.length)
+
+    return (100 - this.progress) / this.titles.length
+  }
+  /**
+   * Calculates from `scrollHeight`, `offsetHeight` and `clientHeight`
+   * the maximum document body height and returns it.
+   * 
+   * @return {number} Document body height
+   */
+  get wrapperHeight() {
+    return Math.max(
+      this.wrapper.current.scrollHeight,
+      this.wrapper.current.offsetHeight,
+      this.wrapper.current.clientHeight
+    )
+  }
+  /**
+   * Calculates from `scrollHeight`, `offsetHeight` and `clientHeight`
+   * the maximum wrapper height and returns it.
+   * 
+   * @return {number} Wrapper height
+   */
+  get documentHeight() {
+    return Math.max(
+      document.body.scrollHeight, document.documentElement.scrollHeight,
+      document.body.offsetHeight, document.documentElement.offsetHeight,
+      document.body.clientHeight, document.documentElement.clientHeight
+    )
+  }
+  /**
+   * Extracts titles from markdown nodes.
+   * 
+   * @returns {string[]} List of all markdown node titles
+   */
+  get titles() {
+    const { nodes } = this.props
+
+    return nodes.map(({ frontmatter }) => frontmatter.title)
+  }
 }
 
-ImageMap.propTypes = {
+ScrollCards.propTypes = {
+  hasIndicator: PropTypes.bool,
+  indicatorClass: PropTypes.string,
+  indicatorTitleClass: PropTypes.string,
+  itemClass: PropTypes.string,
+  itemContentClass: PropTypes.string,
+  itemTitleClass: PropTypes.string,
   nodes: PropTypes.arrayOf(
     PropTypes.shape({
-      childImageSharp: PropTypes.shape({
-        fluid: PropTypes.object.isRequired
-      })
+      frontmatter: PropTypes.shape({
+        title: PropTypes.string.isRequired
+      }),
+      html: PropTypes.string
     })
   ),
-  activeClass: PropTypes.string,
-  activeStyle: PropTypes.object,
-  itemClass: PropTypes.string,
-  itemStyle: PropTypes.object,
-  imageStyle: PropTypes.object,
-  threshold: PropTypes.number,
+  wrapperClass: PropTypes.string,
+  cssVariables: PropTypes.shape({
+    count: PropTypes.shape({
+      key: PropTypes.string,
+      val: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ])
+    }),
+    progress: PropTypes.shape({
+      key: PropTypes.string,
+      val: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+      ])
+    })
+  })
 }
 
-ImageMap.defaultProps = {
-  activeClass: ``,
-  activeStyle: {
-    opacity: 1,
+ScrollCards.defaultProps = {
+  cssVariables: {
+    count: {
+      key: '--nls-scroll-cards-count',
+      val: 1,
+    },
+    progress: {
+      key: '--nls-scroll-cards-progress',
+      val: `0%`
+    }
   },
-  imageStyle: {
-    maxWidth: `100%`,
-    maxHeight: `100vh`,
-  },
-  itemClass: ``,
-  itemStyle: {
-    position: `absolute`,
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    display: `block`,
-    opacity: 0,
-    width: `100%`,
-    height: `100%`,
-  },
-  nodes: [],
-  threshold: 100
+  hasIndicator: true,
+  indicatorClass: `nls-scroll-cards__indicator`,
+  indicatorTitleClass: `nls-scroll-cards__indicator__title`,
+  itemClass: `nls-scroll-cards__item`,
+  itemContentClass: `nls-scroll-cards__item__content`,
+  itemTitleClass: `nls-scroll-cards__item__title`,
+  nodes: [
+    {
+      frontmatter: {
+        title: `Nothing to see here ...`,
+      },
+      html: `There was no content uploaded yet.`,
+    }
+  ],
+  wrapperClass: `nls-scroll-cards`
 }
 
-export default ImageMap
+export default ScrollCards
