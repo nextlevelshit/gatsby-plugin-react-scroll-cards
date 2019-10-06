@@ -1,7 +1,7 @@
 {
   "name": "gatsby-plugin-react-scroll-cards",
   "description": "This GatsbyJS plugin is generating a full-height scroll menu with abstracts of each card. Cards can be clicked and opened in a separate modal.",
-  "version": "1.0.0-2",
+  "version": "1.0.0-3",
   "main": "index.js",
   "keywords": [
     "gatsby",
