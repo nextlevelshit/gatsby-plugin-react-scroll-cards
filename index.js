@@ -37,6 +37,7 @@ class ScrollCards extends React.Component {
       indicatorClass,
       indicatorTitleClass,
       indicatorTitleActiveClass,
+      indicatorSubTitleClass,
       itemClass, 
       itemContentClass, 
       itemTitleClass,
@@ -50,18 +51,26 @@ class ScrollCards extends React.Component {
         {hasIndicator && <div className={indicatorClass}>
           <Scrollspy offset={scrollOffset} className="container" items={this.titles.map((title) => kebabCase(title))} currentClassName={indicatorTitleActiveClass}>
             {this.titles.map((title, i) => {
+              const slug = kebabCase(title)
+              const subTitles = this.subTitles(slug)
+
               return (
                 <li className={indicatorTitleClass} key={i}>
-                  <a href={`#${kebabCase(title)}`}>
+                  <a href={`#${slug}`}>
                     {title}
                   </a>
+                  {subTitles.length > 0 && <ul>
+                    {subTitles.map(sub => {
+                      return <li className={indicatorSubTitleClass}>{sub}</li>
+                    })}
+                  </ul>}
                 </li>
               )
             })}
           </Scrollspy>
         </div>}
         <div>
-          {nodes.map(({ frontmatter, html }, i) => {
+          {nodes.map(({ frontmatter, headings, html }, i) => {
             const { title } = frontmatter
 
             return (
@@ -104,6 +113,32 @@ class ScrollCards extends React.Component {
     }) 
   }
   /**
+   * Extracts all subtitles of a specific depth of a specific
+   * markdown node 
+   * 
+   * @param {string} slug
+   * @param {number} depth 
+   * @returns {string[]} List of all sub titles 
+   */
+  subTitles(slug, depth = 2) {
+    const { nodes } = this.props
+
+    const node = nodes.find(({ frontmatter }) => {
+      const { title } = frontmatter
+      return kebabCase(title) === slug
+    })
+
+    if (!node.hasOwnProperty('headings')) return []
+
+    const { headings } = node
+
+    if (headings.length === 0) return []
+
+    return headings.filter(({ depth }) => {
+      return depth === 2
+    }).map(({ value }) => value)
+  }
+  /**
    * Extracts titles from markdown nodes.
    * 
    * @returns {string[]} List of all markdown node titles
@@ -124,6 +159,7 @@ ScrollCards.propTypes = {
   indicatorClass: PropTypes.string,
   indicatorTitleClass: PropTypes.string,
   indicatorTitleActiveClass: PropTypes.string,
+  indicatorSubTitleClass: PropTypes.string,
   itemClass: PropTypes.string,
   itemContentClass: PropTypes.string,
   itemTitleClass: PropTypes.string,
@@ -132,6 +168,12 @@ ScrollCards.propTypes = {
       frontmatter: PropTypes.shape({
         title: PropTypes.string.isRequired
       }),
+      headings: PropTypes.arrayOf(
+        PropTypes.shape({
+          value: PropTypes.string,
+          depth: PropTypes.number
+        })
+      ),
       html: PropTypes.string
     })
   ),
@@ -148,6 +190,7 @@ ScrollCards.defaultProps = {
   indicatorClass: `nls-scroll-cards__indicator`,
   indicatorTitleClass: `nls-scroll-cards__indicator__title`,
   indicatorTitleActiveClass: `nls-scroll-cards__indicator__title--active`,
+  indicatorSubTitleClass: `nls-scroll-cards__indicator__subtitle`,
   itemClass: `nls-scroll-cards__item`,
   itemContentClass: `nls-scroll-cards__item__content`,
   itemTitleClass: `nls-scroll-cards__item__title`,
@@ -156,6 +199,7 @@ ScrollCards.defaultProps = {
       frontmatter: {
         title: `Nothing to see here ...`,
       },
+      headings: [],
       html: `There was no content uploaded yet.`,
     }
   ],
