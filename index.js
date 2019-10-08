@@ -6,6 +6,7 @@
  *
  *  @requires     NPM: react, prop-types, lodash, react-scrollspy
  */
+import { Link } from "gatsby"
 import { kebabCase } from "lodash"
 import PropTypes from "prop-types"
 import React from "react"
@@ -34,14 +35,14 @@ class ScrollCards extends React.Component {
   render() {
     const { 
       nodes, 
+      hasIndicator,
       indicatorClass,
       indicatorTitleClass,
       indicatorTitleActiveClass,
       indicatorSubTitleClass,
       itemClass, 
-      itemContentClass, 
-      itemTitleClass,
-      hasIndicator,
+      itemContentClass,
+      linkTitle,
       scrollOffset,
       wrapperClass,
     } = this.props
@@ -70,16 +71,17 @@ class ScrollCards extends React.Component {
           </Scrollspy>
         </div>}
         <div>
-          {nodes.map(({ frontmatter, headings, html }, i) => {
+          {nodes.map(({ fields, frontmatter, headings, html }, i) => {
             const { title } = frontmatter
+            const { slug } = fields
 
             return (
               <div className={itemClass} id={kebabCase(title)} key={i}>
                 <div className="container">
-                  <div className={itemContentClass} dangerouslySetInnerHTML={{ __html: html }} />
-                  <div className={itemTitleClass}>
-                    20.09.2019
-                  </div>
+                  <div to={slug} className={itemContentClass} dangerouslySetInnerHTML={{ __html: html }} />
+                  <Link to={slug} title={linkTitle}>
+                    {linkTitle}
+                  </Link>
                 </div>
               </div>
             )
@@ -162,7 +164,7 @@ ScrollCards.propTypes = {
   indicatorSubTitleClass: PropTypes.string,
   itemClass: PropTypes.string,
   itemContentClass: PropTypes.string,
-  itemTitleClass: PropTypes.string,
+  linkTitle: PropTypes.string,
   nodes: PropTypes.arrayOf(
     PropTypes.shape({
       frontmatter: PropTypes.shape({
@@ -193,7 +195,7 @@ ScrollCards.defaultProps = {
   indicatorSubTitleClass: `nls-scroll-cards__indicator__subtitle`,
   itemClass: `nls-scroll-cards__item`,
   itemContentClass: `nls-scroll-cards__item__content`,
-  itemTitleClass: `nls-scroll-cards__item__title`,
+  linkTitle: `Read whole article`,
   nodes: [
     {
       frontmatter: {

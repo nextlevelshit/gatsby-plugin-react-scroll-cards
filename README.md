@@ -87,8 +87,8 @@ indicatorTitleClass: `nls-scroll-cards__indicator__title`,
 indicatorTitleActiveClass: `nls-scroll-cards__indicator__title--active`,
 itemClass: `nls-scroll-cards__item`,
 itemContentClass: `nls-scroll-cards__item__content`,
-itemTitleClass: `nls-scroll-cards__item__title`,
 indicatorSubTitleClass: `nls-scroll-cards__indicator__subtitle`,
+linkTitle: `Read whole article`,
 nodes: [
   {
     frontmatter: {

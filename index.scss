@@ -9,12 +9,30 @@
   min-height: 100vh;
 
   &__item {
-    @apply  bg-white h-full overflow-hidden relative;
+    @apply bg-white h-full overflow-hidden relative;
 
     height: 80vh;
 
+    &__content,
+    a {
+      @apply w-full;
+
+      @screen lg {
+        @apply w-2/3;
+      }
+    }
+
     &__content {
-      @apply h-full overflow-hidden relative w-2/3;
+      @apply h-full overflow-hidden relative;
+
+      &:after {
+        @apply absolute inset-x-0 bottom-0 z-10;
+  
+        content: "";
+        height: 80%;
+        background-color: rgba(var(--nls-scroll-cards-bg), 0);
+        background-image: linear-gradient(to bottom, rgba(var(--nls-scroll-cards-bg),0), rgba(var(--nls-scroll-cards-bg),1));
+      }
     }
 
     &__title {
@@ -22,16 +40,26 @@
     }
 
     .container {
-      @apply h-full overflow-hidden;
+      @apply h-full overflow-hidden flex flex-col;
     }
 
-    &:after {
-      @apply absolute inset-x-0 bottom-0 z-10;
+    a {
+      @apply z-20 py-12 block text-right;
 
-      content: "";
-      height: 75%;
-      background-color: rgba(var(--nls-scroll-cards-bg), 0);
-      background-image: linear-gradient(to bottom, rgba(var(--nls-scroll-cards-bg),0), rgba(var(--nls-scroll-cards-bg),1));
+      &:after {
+        @apply pl-2 inline-block;
+
+        content: "›";
+        transform: translate3d(0, 0, 0);
+      }
+
+      &:hover,
+      &:focus {
+        
+        &:after {
+          transform: translate3d(theme('spacing.1'), 0, 0);
+        }
+      }
     }
   }
 
@@ -49,20 +77,18 @@
       flex-shrink: 2;
 
       &--active {
-        // @apply font-bold;
-
         flex-shrink: 1;
         color: theme('colors.gray.900');
 
         &:after {
           background: theme('colors.gray.900');
         }
-      }
 
-      &--active .nls-scroll-cards__indicator__subtitle {
-        @apply opacity-100 mt-2 overflow-visible;
-
-        max-height: calc(theme('fontSize.sm') * 4);
+        .nls-scroll-cards__indicator__subtitle {
+          @apply opacity-100 mt-2;
+  
+          max-height: 100%;      
+        }
       }
 
       &:after {
